@@ -1,0 +1,45 @@
+---
+title: "DataVis Final Project"
+author: "Emil Zetterquist"
+date: "3/23/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+library(here)
+
+
+# Reading in Data
+teamstats17_df <- read_csv("Data/teamstatstotals16-17.csv")
+teamstats18_df <- read_csv("Data/teamstatstotals17-18.csv")
+teamstats19_df <- read_csv("Data/teamstatstotals18-19.csv")
+teamstats20_df <- read_csv("Data/teamstatstotals19-20.csv")
+teamstats21_df <- read_csv("Data/teamstatstotals20-21.csv")
+teamstats22_df <- read_csv("Data/teamstatstotals21-22.csv")
+
+teamstats17_df <- teamstats17_df %>% mutate(season = '16/17')
+teamstats18_df <- teamstats18_df %>% mutate(season = '17/18') 
+teamstats19_df <- teamstats19_df %>% mutate(season = '18/19')
+teamstats20_df <- teamstats20_df %>% mutate(season = '19/20')
+teamstats21_df <- teamstats21_df %>% mutate(season = '20/21')
+teamstats22_df <- teamstats22_df %>% mutate(season = '21/22')
+
+teams_full <- rbind(teamstats17_df,
+      teamstats18_df,
+      teamstats19_df,
+      teamstats20_df, 
+      teamstats21_df,
+      teamstats22_df) %>%
+  select(season, everything())
+```
+
+```{r}
+
+```
+
+
