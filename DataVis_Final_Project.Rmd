@@ -12,34 +12,81 @@ knitr::opts_chunk$set(echo = TRUE)
 ```{r}
 library(tidyverse)
 library(here)
+library(shiny)
+library(plotly)
+
+players_df <- read_csv("Data/skaters.csv")
+```
 
 
-# Reading in Data
-teamstats17_df <- read_csv("Data/teamstatstotals16-17.csv")
-teamstats18_df <- read_csv("Data/teamstatstotals17-18.csv")
-teamstats19_df <- read_csv("Data/teamstatstotals18-19.csv")
-teamstats20_df <- read_csv("Data/teamstatstotals19-20.csv")
-teamstats21_df <- read_csv("Data/teamstatstotals20-21.csv")
-teamstats22_df <- read_csv("Data/teamstatstotals21-22.csv")
+```{r}
+all_df <- players_df %>%
+  filter(situation == "all") %>%
+  mutate(minutes_icetime = icetime/60,
+         ice_per_game = minutes_icetime/games_played)
 
-teamstats17_df <- teamstats17_df %>% mutate(season = '16/17')
-teamstats18_df <- teamstats18_df %>% mutate(season = '17/18') 
-teamstats19_df <- teamstats19_df %>% mutate(season = '18/19')
-teamstats20_df <- teamstats20_df %>% mutate(season = '19/20')
-teamstats21_df <- teamstats21_df %>% mutate(season = '20/21')
-teamstats22_df <- teamstats22_df %>% mutate(season = '21/22')
+top_10 <- all_df %>% 
+  arrange(-ice_per_game) %>%
+  slice(1:10) %>%
+  mutate(name = fct_reorder(name, ice_per_game))
 
-teams_full <- rbind(teamstats17_df,
-      teamstats18_df,
-      teamstats19_df,
-      teamstats20_df, 
-      teamstats21_df,
-      teamstats22_df) %>%
-  select(season, everything())
+
+
+
+
+
+ggplot(data = top_10, aes(y = name, 
+                            x = ice_per_game,
+                            text = ice_per_game)) +
+    geom_point(colour = "blue",
+             size = 2.5) +
+    labs(y = "",
+         x = "Time on Ice per Game") +
+  coord_cartesian(xlim = c(23, 28))
+  
+p1 <- ggplotly(tooltip = "text",
+         displayModeBar = FALSE) 
+
 ```
 
 ```{r}
+var_choice <- names(top_10)
 
+library(shiny)
+
+ui <- fluidPage(
+  sidebarLayout(sidebarPanel(
+    selectizeInput("statchoice",
+                   label = "Choose a Statistic",
+                   choices = var_choice,
+                   selected = top_10$ice_per_game)
+  ),
+  mainPanel(
+    plotlyOutput(outputId = "plot1")
+  ))
+)
+
+server <- function(input, output, session) {
+  
+  top_10_react <- reactive({
+    all_df %>% 
+      arrange(-input$statchoice) %>%
+      slice(1:10) %>%
+      mutate(name = fct_reorder(name, input$statchoice))})
+  
+  ggplot(data = top_10_react(), aes(y = name, 
+                            x = input$statchoice,
+                            text = input$statchoice)) +
+    geom_point(colour = "blue",
+             size = 2.5) +
+    labs(y = "") 
+  
+output$plot1 <- renderPlotly(
+  ggplotly(tooltip = "text",
+         displayModeBar = FALSE)
+)
+}
+
+shinyApp(ui, server)
 ```
-
 

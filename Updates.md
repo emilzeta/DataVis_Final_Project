@@ -5,3 +5,7 @@ Downloaded the data sets and merged them. I think I'm going to do some sort of N
 March 28 beginning of class:
 
 I decided to work with a different data set and started making some static graphs. I then made a plotly interactive graph and put it up in a shiny App.
+
+March 28 end of class:
+
+I added a selectize input into my shiny app and started to make the reactive data set. I ended class with some issues with that reactive data set that I need to figure out. 
