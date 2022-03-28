@@ -1,3 +1,7 @@
 March 23:
 
 Downloaded the data sets and merged them. I think I'm going to do some sort of NHL summary shiny app where you sort the data by conference.
+
+March 28 beginning of class:
+
+I decided to work with a different data set and started making some static graphs. I then made a plotly interactive graph and put it up in a shiny App.
