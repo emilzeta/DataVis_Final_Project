@@ -9,3 +9,10 @@ I decided to work with a different data set and started making some static graph
 March 28 end of class:
 
 I added a selectize input into my shiny app and started to make the reactive data set. I ended class with some issues with that reactive data set that I need to figure out. 
+
+
+March 20 beginning of class:
+
+I have been trying to solve the issues with my shinyApp aithout success.
+
+
