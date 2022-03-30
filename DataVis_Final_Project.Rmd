@@ -30,27 +30,19 @@ top_10 <- all_df %>%
   slice(1:10) %>%
   mutate(name = fct_reorder(name, ice_per_game))
 
-
-
-
-
-
-ggplot(data = top_10, aes(y = name, 
-                            x = ice_per_game,
-                            text = ice_per_game)) +
-    geom_point(colour = "blue",
+ggplot(data = top_10, aes(y = name,
+                          x = ice_per_game)) +
+  geom_point(color = "blue",
              size = 2.5) +
-    labs(y = "",
-         x = "Time on Ice per Game") +
-  coord_cartesian(xlim = c(23, 28))
+  labs(y = "") 
   
-p1 <- ggplotly(tooltip = "text",
-         displayModeBar = FALSE) 
+ggplotly()
+
 
 ```
 
 ```{r}
-var_choice <- names(top_10)
+var_choice <- names(top_10)[7:156]
 
 library(shiny)
 
@@ -59,7 +51,7 @@ ui <- fluidPage(
     selectizeInput("statchoice",
                    label = "Choose a Statistic",
                    choices = var_choice,
-                   selected = top_10$ice_per_game)
+                   selected = "ice_per_game")
   ),
   mainPanel(
     plotlyOutput(outputId = "plot1")
@@ -70,21 +62,24 @@ server <- function(input, output, session) {
   
   top_10_react <- reactive({
     all_df %>% 
-      arrange(-input$statchoice) %>%
+      arrange(desc(input$statchoice)) %>%
       slice(1:10) %>%
-      mutate(name = fct_reorder(name, input$statchoice))})
+      mutate(name = fct_reorder(name, input$statchoice))
+    })
   
-  ggplot(data = top_10_react(), aes(y = name, 
-                            x = input$statchoice,
-                            text = input$statchoice)) +
-    geom_point(colour = "blue",
-             size = 2.5) +
-    labs(y = "") 
+  output$plot1 <- renderPlotly({
+    p1 <- ggplot(data = top_10_react(), aes(y = name, 
+                                            x = input$statchoice,
+                                            text = input$statchoice)) +
+          geom_point(colour = "blue",
+                     size = 2.5) +
+          labs(y = "")
+    
+    gggplotly(p1,
+              tooltip = "text",
+              displayModeBar = FALSE)
+    })
   
-output$plot1 <- renderPlotly(
-  ggplotly(tooltip = "text",
-         displayModeBar = FALSE)
-)
 }
 
 shinyApp(ui, server)
