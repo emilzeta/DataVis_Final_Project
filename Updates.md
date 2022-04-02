@@ -15,6 +15,8 @@ March 30 beginning of class:
 
 I have been trying to solve the issues with my shinyApp without success.
 
+To get credit for this, you need to push your attempts. Your project is identical between the end of class on March 28 and the beginning of class on March 30. If you weren't able to get anything done, then you need to at least push a file with what you tried (or, give some of the websites you checked and tried things from....just __something__)
+
 
 March 30 end of class:
 
