@@ -11,3 +11,7 @@ Working on visualizing different diseases. He has spent a lot of time figuring o
 March 30 Lily:
 
 Making a r portfolio, with different visualizations of interesting data sets. Some interactive graphs. 
+
+April 4 Maddox:
+
+Working on mapping hospitals and displaying certain statistics. She's using a bunch of interactive graphs and is currently trying to figure out how to display certain statistics when clicking on the map. 

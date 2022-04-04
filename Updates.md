@@ -19,3 +19,12 @@ I have been trying to solve the issues with my shinyApp without success.
 March 30 end of class:
 
 I solved some issues but now I have some other issues with my reactive data set that I gotta figure out.
+
+
+April 4 beginning of class:
+
+I fixed the issues from before so that I have a working shinyApp. I also added a dashboard so that I have 3 pages to switch between. Also donwloaded some more data to add to the app.
+
+April 4 end of class:
+
+I worked on sizing the boxes displayed so that it all looks nicer. I also started to think about more ideas that I could add to my app. I think a radar map of proportions of scoring oportunities for goalies, and a radar map of how situations in which a player or team scored would be cool.

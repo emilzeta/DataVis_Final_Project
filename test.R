@@ -1,49 +1,32 @@
----
-title: "DataVis Final Project"
-author: "Emil Zetterquist"
-date: "3/23/2022"
-output: html_document
----
-
-```{r setup, include=FALSE}
-knitr::opts_chunk$set(echo = TRUE)
-```
-
-```{r}
-library(tidyverse)
-library(here)
-library(shiny)
 library(plotly)
+library(tidyverse)
+library(shiny)
 library(shinydashboard)
 
+## Read in Data
 players_df <- read_csv("Data/skaters.csv")
 goalies_df <- read_csv("Data/goalies.csv")
 teams_df <- read_csv("Data/teams.csv")
-```
 
 
-```{r}
+#######################################################################
+
+  # Modifications
+
 players_df <- players_df %>%
   mutate(minutes_icetime = icetime/60,
          ice_per_game = minutes_icetime/games_played)
 
-top_10 <- all_df %>% 
-  arrange(-ice_per_game) %>%
-  slice(1:10) %>%
-  mutate(name = fct_reorder(name, ice_per_game))
 
-####################################################
+#######################################################################
 
-radarchart
-
-```
-
-```{r}
 var_choice <- names(players_df)
 var_choice_g <- names(goalies_df)
 var_choice_t <- names(teams_df)
 
-### APP
+#######################################################################
+
+    # APP
 
 ui <- dashboardPage(
   dashboardHeader(title = "Hockey"),
@@ -62,15 +45,15 @@ ui <- dashboardPage(
                                  choices = var_choice,
                                  selected = "ice_per_game"), 
                   height = 82
-                  ),
+              ),
               box(radioButtons("situation",
                                label = "Situation",
                                choices = levels(factor(players_df$situation)),
                                selected = "all",
                                inline = TRUE
-                               )
-                  ),
-              box(plotlyOutput(outputId = "plot1"), width = 8),
+              )
+              ),
+              box(plotlyOutput(outputId = "plot1"), width = 12),
       ),
       tabItem("goalies",
               box(selectizeInput("goaliestat",
@@ -78,15 +61,15 @@ ui <- dashboardPage(
                                  choices = var_choice,
                                  selected = "games_played"),
                   height = 82
-                  ),
+              ),
               box(radioButtons("sitgoalie",
                                label = "Situation",
                                choices = levels(factor(goalies_df$situation)),
                                selected = "all",
                                inline = TRUE
-                               )
+              )
               ),
-              box(plotlyOutput(outputId = "plot2"), width = 8)
+              box(plotlyOutput(outputId = "plot2"), width = 12)
       ),
       tabItem("teams",
               box(selectizeInput("teamstat",
@@ -94,14 +77,14 @@ ui <- dashboardPage(
                                  choices = var_choice_t,
                                  selected = "goalsFor"),
                   height = 82
-                  ),
+              ),
               box(radioButtons("sitteam",
                                label = "Situation",
                                choices = levels(factor(teams_df$situation)),
                                selected = "all",
                                inline = TRUE)
-                  ),
-              box(plotlyOutput(outputId = "plot3"), width = 8)
+              ),
+              box(plotlyOutput(outputId = "plot3"), width = 12)
       )
     )
   )
@@ -144,8 +127,8 @@ server <- function(input, output, session) {
   
   output$plot2 <- renderPlotly({
     p2 <- ggplot(data = top_10_goalies(), aes(y = name, 
-                                            x = .data[[input$goaliestat]],
-                                            text = .data[[input$goaliestat]])) +
+                                              x = .data[[input$goaliestat]],
+                                              text = .data[[input$goaliestat]])) +
       geom_point(colour = "blue",
                  size = 2.5) +
       labs(y = "")
@@ -181,6 +164,3 @@ server <- function(input, output, session) {
 }
 
 shinyApp(ui, server)
-
-```
-
