@@ -15,6 +15,7 @@ library(here)
 library(shiny)
 library(plotly)
 library(shinydashboard)
+library(fmsb)
 
 players_df <- read_csv("Data/skaters.csv")
 goalies_df <- read_csv("Data/goalies.csv")
@@ -182,5 +183,73 @@ server <- function(input, output, session) {
 
 shinyApp(ui, server)
 
+```
+
+```{r}
+shots_df <- goalies_df %>%
+  filter(name == "Jacob Markstrom") %>%
+  filter(situation == "5om5") %>%
+  select(lowDangerShots, mediumDangerShots, highDangerShots)
+
+radarchart(shots_df,
+           cglty = 1, cglcol = "gray",
+           pcol = 4, plwd = 2,
+           pfcol = rgb(0, 0.4, 1, 0.25))
+```
+
+```{r}
+teamstats17_df <- read_csv("Data/teamstatstotals/teamstatstotals16-17.csv")
+teamstats18_df <- read_csv("Data/teamstatstotals/teamstatstotals17-18.csv")
+teamstats19_df <- read_csv("Data/teamstatstotals/teamstatstotals18-19.csv")
+teamstats20_df <- read_csv("Data/teamstatstotals/teamstatstotals19-20.csv")
+teamstats21_df <- read_csv("Data/teamstatstotals/teamstatstotals20-21.csv")
+teamstats22_df <- read_csv("Data/teamstatstotals/teamstatstotals21-22.csv")
+
+teamstats17_df <- teamstats17_df %>% mutate(season = '16/17')
+teamstats18_df <- teamstats18_df %>% mutate(season = '17/18') 
+teamstats19_df <- teamstats19_df %>% mutate(season = '18/19')
+teamstats20_df <- teamstats20_df %>% mutate(season = '19/20')
+teamstats21_df <- teamstats21_df %>% mutate(season = '20/21')
+teamstats22_df <- teamstats22_df %>% mutate(season = '21/22')
+
+teams_full <- rbind(teamstats17_df,
+                    teamstats18_df,
+                    teamstats19_df,
+                    teamstats20_df, 
+                    teamstats21_df,
+                    teamstats22_df) %>%
+  select(season, everything())
+
+teams_full <- teams_full %>%
+  group_by(season) %>%
+  mutate(ff_rate = FF/TOI,
+         cf_rate = CF/TOI,
+         cf_total = sum(CF),
+         total_TOI = sum(TOI),
+         TOI_pg = (TOI/GP)*60,
+         n_teams = n())
+
+## Total Attempts
+teams_full <- teams_full %>% 
+  filter(season == '20/21') %>%
+  mutate(Team = fct_reorder(.f = Team, .x = CF))
+
+  ggplot(data = teams_full, aes(x = Team,
+                                y = CF)) +
+  geom_bar(stat = "identity") +
+    labs(x = "", y = "Corsi for") +
+    coord_flip()
+  
+## CF_rate
+  
+teams_full <- teams_full %>%
+  filter(season == '20/21') %>%
+  mutate(Team = fct_reorder(.f = Team, .x = cf_rate)) 
+
+ggplot(data = teams_full, aes(x = Team,
+                              y = cf_rate)) +
+  geom_bar(stat = "identity") +
+  labs(x = "", y = "Corsi for per Minute") +
+  coord_flip()
 ```
 

@@ -33,3 +33,7 @@ I worked on sizing the boxes displayed so that it all looks nicer. I also starte
 April 6 beginning of class:
 
 I added some sub-menus to the app. I breifly tried out my idea from last class but it didn't really work with the data. 
+
+April 6 end of class:
+
+I added an extra tab that will contain my SYE which is some statistics regarding empty net attempts. I read in all the data necessary and created an interactive graph. I will need to make it look less messy by creating some sort of interactive data set. It's also worth saying that I changed my main app to the r script file named "test.R". It was just easier to work in a r script file.

@@ -15,3 +15,7 @@ Making a r portfolio, with different visualizations of interesting data sets. So
 April 4 Maddox:
 
 Working on mapping hospitals and displaying certain statistics. She's using a bunch of interactive graphs and is currently trying to figure out how to display certain statistics when clicking on the map. 
+
+April 6:
+
+Working on an MLB Shiny App showing different figures that you can change depending on the year. Is currently trying to fix some minor issues with some of the graphs.
