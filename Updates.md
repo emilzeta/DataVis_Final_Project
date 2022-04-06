@@ -10,7 +10,6 @@ March 28 end of class:
 
 I added a selectize input into my shiny app and started to make the reactive data set. I ended class with some issues with that reactive data set that I need to figure out. 
 
-
 March 30 beginning of class:
 
 I have been trying to solve the issues with my shinyApp without success.
@@ -29,4 +28,8 @@ I fixed the issues from before so that I have a working shinyApp. I also added a
 
 April 4 end of class:
 
-I worked on sizing the boxes displayed so that it all looks nicer. I also started to think about more ideas that I could add to my app. I think a radar map of proportions of scoring oportunities for goalies, and a radar map of how situations in which a player or team scored would be cool.
+I worked on sizing the boxes displayed so that it all looks nicer. I also started to think about more ideas that I could add to my app. I think a radar map of proportions of scoring opportunities for goalies, and a radar map of how situations in which a player or team scored would be cool.
+
+April 6 beginning of class:
+
+I added some sub-menus to the app. I breifly tried out my idea from last class but it didn't really work with the data. 
