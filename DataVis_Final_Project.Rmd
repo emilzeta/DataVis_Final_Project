@@ -227,10 +227,11 @@ teams_full <- teams_full %>%
          cf_total = sum(CF),
          total_TOI = sum(TOI),
          TOI_pg = (TOI/GP)*60,
-         n_teams = n())
+         n_teams = n(),
+         ppg = Points/GP)
 
 ## Total Attempts
-teams_full <- teams_full %>% 
+teams_2021 <- teams_full %>% 
   filter(season == '20/21') %>%
   mutate(Team = fct_reorder(.f = Team, .x = CF))
 
@@ -242,14 +243,22 @@ teams_full <- teams_full %>%
   
 ## CF_rate
   
-teams_full <- teams_full %>%
+teams_2122 <- teams_full %>%
   filter(season == '20/21') %>%
   mutate(Team = fct_reorder(.f = Team, .x = cf_rate)) 
 
-ggplot(data = teams_full, aes(x = Team,
+ggplot(data = teams_2122, aes(x = Team,
                               y = cf_rate)) +
   geom_bar(stat = "identity") +
   labs(x = "", y = "Corsi for per Minute") +
   coord_flip()
+
+## Plotting cf_rate against points
+
+teams_full %>% 
+  filter(season == '20/21') %>%
+  ggplot(aes(x = cf_rate, y = ppg)) +
+  geom_point() +
+  geom_smooth(method = lm)
 ```
 

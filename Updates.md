@@ -37,3 +37,7 @@ I added some sub-menus to the app. I breifly tried out my idea from last class b
 April 6 end of class:
 
 I added an extra tab that will contain my SYE which is some statistics regarding empty net attempts. I read in all the data necessary and created an interactive graph. I will need to make it look less messy by creating some sort of interactive data set. It's also worth saying that I changed my main app to the r script file named "test.R". It was just easier to work in a r script file.
+
+April 11:
+
+I added a 2 graphs to the new "empty net" page that I created last class. I'm currently working on creating some custom variables to filter the interactive graph I created before so that it will be easier to spot patterns.

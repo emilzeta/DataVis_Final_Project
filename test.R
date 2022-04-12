@@ -40,7 +40,8 @@ teams_full <- teams_full %>%
          cf_total = sum(CF),
          total_TOI = sum(TOI),
          TOI_pg = (TOI/GP)*60,
-         n_teams = n())
+         n_teams = n(),
+         ppg = Points/GP)
 
 nhl_cf_rate <- teams_full %>%
   group_by(season) %>%
@@ -79,6 +80,7 @@ ui <- dashboardPage(
   dashboardBody(
     tabItems(
       tabItem("player10",
+              fluidRow(
               box(selectizeInput("stat",
                                  label = "Choose a Statistic",
                                  choices = var_choice,
@@ -93,8 +95,9 @@ ui <- dashboardPage(
               )
               ),
               box(plotlyOutput(outputId = "plot1"), width = 12),
-      ),
+      )),
       tabItem("goalie10",
+              fluidRow(
               box(selectizeInput("goaliestat",
                                  label = "Choose a Statistic",
                                  choices = var_choice,
@@ -109,8 +112,9 @@ ui <- dashboardPage(
               )
               ),
               box(plotlyOutput(outputId = "plot2"), width = 12)
-      ),
+      )),
       tabItem("team10",
+              fluidRow(
               box(selectizeInput("teamstat",
                                  label = "Choose a Statistic",
                                  choices = var_choice_t,
@@ -124,10 +128,18 @@ ui <- dashboardPage(
                                inline = TRUE)
                   ),
               box(plotlyOutput(outputId = "plot3"), width = 12)
-              ),
+              )),
       tabItem("emptynet",
-              box(plotlyOutput(outputId = "figure1"), width = 12)
-              )
+              fluidRow(
+              box(plotlyOutput(outputId = "figure1"), width = 12),
+              box(radioButtons("en_season",
+                               label = "Season",
+                               choices = levels(factor(teams_full$season)),
+                               selected = '20/21',
+                               inline = TRUE), width = 12),
+              box(plotOutput(outputId = "en_hist")),
+              box(plotOutput(outputId = "en_point"))
+              ))
     )
   )
 )
@@ -228,6 +240,29 @@ server <- function(input, output, session) {
               opacityDim = 1,
               selected = s)
   )
+  
+  en_react <- reactive({
+    teams_full %>%
+      filter(season == input$en_season) %>%
+      mutate(Team = fct_reorder(.f = Team, .x = cf_rate))
+  })
+  
+  output$en_hist <- renderPlot({
+    ggplot(data = en_react(), aes(x = Team,
+                                  y = cf_rate)) +
+      geom_point() +
+      geom_segment(aes(x = Team, xend = Team, y = 0, yend = cf_rate)) +
+      labs(x = "", y = "Corsi for per Minute") +
+      coord_flip()
+  })
+  
+  output$en_point <- renderPlot({
+    teams_full %>% 
+      filter(season == input$en_season) %>%
+      ggplot(aes(x = cf_rate, y = ppg)) +
+      geom_point() +
+      geom_smooth(method = lm)
+  })
 }
 
 shinyApp(ui, server)
