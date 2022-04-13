@@ -41,3 +41,7 @@ I added an extra tab that will contain my SYE which is some statistics regarding
 April 11:
 
 I added a 2 graphs to the new "empty net" page that I created last class. I'm currently working on creating some custom variables to filter the interactive graph I created before so that it will be easier to spot patterns.
+
+April 13:
+
+I changed a couple of lables and also fixed some issues with graphs extending past the page.
