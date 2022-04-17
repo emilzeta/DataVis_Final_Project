@@ -45,3 +45,5 @@ I added a 2 graphs to the new "empty net" page that I created last class. I'm cu
 April 13:
 
 I changed a couple of lables and also fixed some issues with graphs extending past the page.
+
+MH: There were not any changes made to your files for this commit on April 13.
