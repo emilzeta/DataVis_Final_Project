@@ -46,7 +46,11 @@ April 13:
 
 I changed a couple of lables and also fixed some issues with graphs extending past the page.
 
+<<<<<<< HEAD
 April 18 Before class:
 
 I worked on changing the color of the interactive graph on the empty net page so that the color is different for different teams. 
 
+=======
+MH: There were not any changes made to your files for this commit on April 13.
+>>>>>>> 0bd51e2688d4b872b9c95ab6a894b087c9364b92
