@@ -19,3 +19,7 @@ Working on mapping hospitals and displaying certain statistics. She's using a bu
 April 6:
 
 Working on an MLB Shiny App showing different figures that you can change depending on the year. Is currently trying to fix some minor issues with some of the graphs.
+
+April 18 Nick:
+
+He is working in creating interactive maps in different cities where you can zoom in on different properties and filter by size.

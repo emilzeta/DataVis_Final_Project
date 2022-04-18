@@ -3,6 +3,7 @@ library(tidyverse)
 library(shiny)
 library(shinydashboard)
 library(teamcolors)
+library(ggpubr)
 
 ## Read in Data
 players_df <- read_csv("Data/skaters.csv")
@@ -58,7 +59,7 @@ teamcolors <- teamcolors %>%
   mutate(across(everything(),
                 .fns = ~replace(., . ==  "St. Louis Blues" , "St Louis Blues")))
 
-teams_full <- left_join(teams_full, teamcolors, by = "Team") %>% view()
+teams_full <- left_join(teams_full, teamcolors, by = "Team")
 
 #######################################################################
 
@@ -85,6 +86,7 @@ ui <- dashboardPage(
   ),
   dashboardBody(
     tabItems(
+      
       tabItem("player10",
               fluidRow(
               box(selectizeInput("stat",
@@ -137,18 +139,24 @@ ui <- dashboardPage(
               )),
       tabItem("emptynet",
               fluidRow(
-              box(title = "Shot Attempts on the Empty Net per Minute Since 16/17",
+              box(title = "Analysing and Visualizing Empty Net Shot Rates in the NHL",
                   br(),
-                  "Here I will write stuff about the study",
+                  "After watching NHL games throughout the 2021-2022 season, we hypothesized that teams more often than previous seasons were shooting for the empty net, seemingly not caring whether or not they missed for an icing. The question then became whether there has been a recent shift in how teams defend in a 6-on-5 situation. For estimating a teams amount of attempts we used Corsi for per minute against an open net (Corsi being defined as all blocked, missed and on target shots). All data was taken from naturalstattrick.com",
                   br(), br(), br(),
                   solidHeader = TRUE,
                   status = "primary",
-                  plotlyOutput(outputId = "figure1"), width = 12),
-              box(title = "Season",
+                  plotlyOutput(outputId = "figure1"), width = 12,
+                  br(), br(),
+                  "Looking at both team and league averages and how they changed throughout the years, there was no significant overall difference in the last 5 years. The one main thing that was very visible was that teams that do good a particular year generally have a more attempts at the open net than those teams who do worse. This is most likely do to the fact that they spend time being up a goal or two at the end of the 3rd period. What is interesting is that there are a few teams that don't follow this general trend and there are teams who have a big shift in shot attempts at the open net from one particular year to the following. We think that coaching style may play a big part in this.",
+                  br(), br()),
+              box(title = "Single Season Visualizations",
+                  br(),
+                  "Below we can see two plots visualizing the difference between seasons. In the lolipop chart to the left we can see that the teams that shoot the most at the open net change from season to season and that the teams on top are usually very strong that season. To the right we see the realtionship between points and shot attempts per minute. Noticable is that R keeps staying positive throughout all of the seasons, suggesting that there is a positive relationship between shot attempts per minute and a team's points per game.",
+                  br(), br(),
                   solidHeader = TRUE,
                   status = "primary",
                   radioButtons("en_season",
-                               label = NULL,
+                               label = "Select Season:",
                                choices = levels(factor(teams_full$season)),
                                selected = '20/21',
                                inline = TRUE), width = 12),
