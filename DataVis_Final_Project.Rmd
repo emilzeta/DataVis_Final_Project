@@ -33,157 +33,8 @@ top_10 <- all_df %>%
   slice(1:10) %>%
   mutate(name = fct_reorder(name, ice_per_game))
 
-####################################################
-
-radarchart
-
 ```
 
-```{r}
-var_choice <- names(players_df)
-var_choice_g <- names(goalies_df)
-var_choice_t <- names(teams_df)
-
-### APP
-
-ui <- dashboardPage(
-  dashboardHeader(title = "Hockey"),
-  dashboardSidebar(
-    sidebarMenu(
-      menuItem("Players", tabName = "players", icon = icon("ice-skate")),
-      menuItem("Goalies", tabName = "goalies", icon = icon("hockey-mask")),
-      menuItem("Teams", tabName = "teams", icon = icon("hockey-sticks"))
-    )
-  ),
-  dashboardBody(
-    tabItems(
-      tabItem("players",
-              box(selectizeInput("stat",
-                                 label = "Choose a Statistic",
-                                 choices = var_choice,
-                                 selected = "ice_per_game"), 
-                  height = 82
-                  ),
-              box(radioButtons("situation",
-                               label = "Situation",
-                               choices = levels(factor(players_df$situation)),
-                               selected = "all",
-                               inline = TRUE
-                               )
-                  ),
-              box(plotlyOutput(outputId = "plot1"), width = 8),
-      ),
-      tabItem("goalies",
-              box(selectizeInput("goaliestat",
-                                 label = "Choose a Statistic",
-                                 choices = var_choice,
-                                 selected = "games_played"),
-                  height = 82
-                  ),
-              box(radioButtons("sitgoalie",
-                               label = "Situation",
-                               choices = levels(factor(goalies_df$situation)),
-                               selected = "all",
-                               inline = TRUE
-                               )
-              ),
-              box(plotlyOutput(outputId = "plot2"), width = 8)
-      ),
-      tabItem("teams",
-              box(selectizeInput("teamstat",
-                                 label = "Choose a Statistic",
-                                 choices = var_choice_t,
-                                 selected = "goalsFor"),
-                  height = 82
-                  ),
-              box(radioButtons("sitteam",
-                               label = "Situation",
-                               choices = levels(factor(teams_df$situation)),
-                               selected = "all",
-                               inline = TRUE)
-                  ),
-              box(plotlyOutput(outputId = "plot3"), width = 8)
-      )
-    )
-  )
-)
-
-server <- function(input, output, session) {
-  
-  ## Players
-  
-  top_10_react <- reactive({
-    players_df %>% 
-      filter(situation == input$situation) %>%
-      arrange(desc(.data[[input$stat]])) %>%
-      slice(1:10) %>%
-      mutate(name = fct_reorder(name, .data[[input$stat]]))
-  })
-  
-  output$plot1 <- renderPlotly({
-    p1 <- ggplot(data = top_10_react(), aes(y = name, 
-                                            x = .data[[input$stat]],
-                                            text = .data[[input$stat]])) +
-      geom_point(colour = "blue",
-                 size = 2.5) +
-      labs(y = "")
-    
-    ggplotly(p1,
-             tooltip = "text",
-             displayModeBar = FALSE)
-  })
-  
-  ## Goalies
-  
-  top_10_goalies <- reactive({
-    goalies_df %>% 
-      filter(situation == input$sitgoalie) %>%
-      arrange(desc(.data[[input$goaliestat]])) %>%
-      slice(1:10) %>%
-      mutate(name = fct_reorder(name, .data[[input$goaliestat]]))
-  })
-  
-  output$plot2 <- renderPlotly({
-    p2 <- ggplot(data = top_10_goalies(), aes(y = name, 
-                                            x = .data[[input$goaliestat]],
-                                            text = .data[[input$goaliestat]])) +
-      geom_point(colour = "blue",
-                 size = 2.5) +
-      labs(y = "")
-    
-    ggplotly(p2,
-             tooltip = "text",
-             displayModeBar = FALSE)
-  })
-  
-  ## Teams
-  
-  top_10_teams <- reactive({
-    teams_df %>% 
-      filter(situation == input$sitteam) %>%
-      arrange(desc(.data[[input$teamstat]])) %>%
-      slice(1:10) %>%
-      mutate(name = fct_reorder(name, .data[[input$teamstat]]))
-  })
-  
-  output$plot3 <- renderPlotly({
-    p3 <- ggplot(data = top_10_teams(), aes(y = name, 
-                                            x = .data[[input$teamstat]],
-                                            text = .data[[input$teamstat]])) +
-      geom_point(colour = "blue",
-                 size = 2.5) +
-      labs(y = "")
-    
-    ggplotly(p3,
-             tooltip = "text",
-             displayModeBar = FALSE)
-  })
-  
-}
-
-shinyApp(ui, server)
-
-```
 
 ```{r}
 shots_df <- goalies_df %>%
@@ -260,5 +111,74 @@ teams_full %>%
   ggplot(aes(x = cf_rate, y = ppg)) +
   geom_point() +
   geom_smooth(method = lm)
+
+## good shinydashboard page
+```
+
+
+<https://rstudio.github.io/shinydashboard/structure.html#bookmarking-and-restoring-selected-tabs>
+
+```{r}
+library(teamcolors)
+
+teamcolors <- teamcolors %>%
+  mutate(across(everything(),
+                           .fns = ~replace(., . ==  "St. Louis Blues" , "St Louis Blues")))
+
+teams_full <- left_join(teams_full, teamcolors, by = "Team")
+
+ggplot(data = teams_full, aes(x = Team,
+                              y = cf_rate,
+                              color = Team,
+                              fill = Team)) +
+  geom_bar(stat = "identity") +
+  labs(x = "", y = "Corsi for per Minute")  +
+  theme(legend.position = "none") +
+  scale_fill_teams(which = 3) +
+  scale_color_teams(which = 1) +
+  coord_flip()
+
+summary(lm(ppg ~ cf_rate, data = teams_full))
+
+cor(teams_full$cf_rate, teams_full$ppg)
+
+library(ggpubr)
+
+ggplot(data = teams_full, aes(x = cf_rate, y = ppg)) +
+  geom_point() + stat_cor(method = "pearson", aes(label = ..r.label..))
+```
+
+```{r}
+
+nhl_cf_rate <- teams_full %>%
+  group_by(season) %>%
+  summarize(cf_rate = cf_total/total_TOI) %>%
+  ungroup() %>%
+  group_by(season, cf_rate)
+
+```
+
+```{r}
+ fig1 <- teams_full %>%
+    highlight_key(., ~Team) %>%
+    ggplot(aes(x = season, 
+               y = cf_rate)) +
+    geom_line(aes(group = Team), colour = "grey") +
+    labs(x = "Season",
+         y = "Shot Attempts per Minute") +
+    geom_line(data = nhl_cf_rate, aes(x = season,
+                                      y = cf_rate), 
+              group = 1,
+              colour = "black", 
+              size = 1.1) 
+  
+  s <- attrs_selected(
+    line = list(color = ,
+                width = 3))
+  
+    ggplotly(fig1) %>%
+    highlight(on = "plotly_hover",
+              opacityDim = 1,
+              selected = s)
 ```
 

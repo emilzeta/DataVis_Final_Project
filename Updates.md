@@ -45,3 +45,8 @@ I added a 2 graphs to the new "empty net" page that I created last class. I'm cu
 April 13:
 
 I changed a couple of lables and also fixed some issues with graphs extending past the page.
+
+April 18 Before class:
+
+I worked on changing the color of the interactive graph on the empty net page so that the color is different for different teams. 
+

@@ -2,6 +2,7 @@ library(plotly)
 library(tidyverse)
 library(shiny)
 library(shinydashboard)
+library(teamcolors)
 
 ## Read in Data
 players_df <- read_csv("Data/skaters.csv")
@@ -53,6 +54,11 @@ players_df <- players_df %>%
   mutate(minutes_icetime = icetime/60,
          ice_per_game = minutes_icetime/games_played)
 
+teamcolors <- teamcolors %>%
+  mutate(across(everything(),
+                .fns = ~replace(., . ==  "St. Louis Blues" , "St Louis Blues")))
+
+teams_full <- left_join(teams_full, teamcolors, by = "Team") %>% view()
 
 #######################################################################
 
@@ -100,7 +106,7 @@ ui <- dashboardPage(
               fluidRow(
               box(selectizeInput("goaliestat",
                                  label = "Choose a Statistic",
-                                 choices = var_choice,
+                                 choices = var_choice_g,
                                  selected = "games_played"),
                   height = 82
               ),
@@ -131,9 +137,18 @@ ui <- dashboardPage(
               )),
       tabItem("emptynet",
               fluidRow(
-              box(plotlyOutput(outputId = "figure1"), width = 12),
-              box(radioButtons("en_season",
-                               label = "Season",
+              box(title = "Shot Attempts on the Empty Net per Minute Since 16/17",
+                  br(),
+                  "Here I will write stuff about the study",
+                  br(), br(), br(),
+                  solidHeader = TRUE,
+                  status = "primary",
+                  plotlyOutput(outputId = "figure1"), width = 12),
+              box(title = "Season",
+                  solidHeader = TRUE,
+                  status = "primary",
+                  radioButtons("en_season",
+                               label = NULL,
                                choices = levels(factor(teams_full$season)),
                                selected = '20/21',
                                inline = TRUE), width = 12),
@@ -223,11 +238,11 @@ server <- function(input, output, session) {
                y = cf_rate)) +
     geom_line(aes(group = Team), colour = "grey") +
     labs(x = "Season",
-         y = "CF per minute") +
+         y = "Shot Attempts per Minute") +
     geom_line(data = nhl_cf_rate, aes(x = season,
                                       y = cf_rate), 
               group = 1,
-              colour = "yellow", 
+              colour = "black", 
               size = 1.1)
   
   s <- attrs_selected(
@@ -252,7 +267,7 @@ server <- function(input, output, session) {
                                   y = cf_rate)) +
       geom_point() +
       geom_segment(aes(x = Team, xend = Team, y = 0, yend = cf_rate)) +
-      labs(x = "", y = "Corsi for per Minute") +
+      labs(x = "", y = "Shot Attempts on the Empty Net per Minute") +
       coord_flip()
   })
   
@@ -261,7 +276,9 @@ server <- function(input, output, session) {
       filter(season == input$en_season) %>%
       ggplot(aes(x = cf_rate, y = ppg)) +
       geom_point() +
-      geom_smooth(method = lm)
+      geom_smooth(method = lm) +
+      labs(x = "Shot Attempts on the Empty Net per Minute", y = "Team Points per Game") +
+      stat_cor(method = "pearson", aes(label = ..r.label..))
   })
 }
 
