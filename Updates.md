@@ -61,6 +61,10 @@ April 20 Before Class:
 
 I again tried to put the team colors in the graphs but it still didn't work. The work I did is in the .rmd file.
 
+April 20 After Class:
+
+I filtered out the non-numeric variables from the "choose a stat" data set for players, goalies and teams. I also removed some unimportant variables. I then added more data for the players data set so that I have 5 seasons instead of one and added radiobuttons to select season. On monday I expect to have done the same for goalies and teams.
+
 =======
 MH: There were not any changes made to your files for this commit on April 13.
 >>>>>>> 0bd51e2688d4b872b9c95ab6a894b087c9364b92

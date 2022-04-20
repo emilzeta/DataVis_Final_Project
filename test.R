@@ -6,10 +6,21 @@ library(teamcolors)
 library(ggpubr)
 
 ## Read in Data
-players_df <- read_csv("Data/skaters.csv")
+players_22 <- read_csv("Data/skaters21-22.csv")
+players_21 <- read_csv("Data/skaters20-21.csv")
+players_20 <- read_csv("Data/skaters19-20.csv")
+players_19 <- read_csv("Data/skaters18-19.csv")
+players_18 <- read_csv("Data/skaters17-18.csv")
+
+players_df <- rbind(players_22,
+                    players_21,
+                    players_20,
+                    players_19,
+                    players_18)
+
 goalies_df <- read_csv("Data/goalies.csv")
 teams_df <- read_csv("Data/teams.csv")
-teamstats17_df <- read_csv("Data/teamstatstotals/teamstatstotals16-17.csv")
+teamstats17_df <- read_csv("Data/teamstatstotals/teamstatstotals16-17.csv") 
 teamstats18_df <- read_csv("Data/teamstatstotals/teamstatstotals17-18.csv")
 teamstats19_df <- read_csv("Data/teamstatstotals/teamstatstotals18-19.csv")
 teamstats20_df <- read_csv("Data/teamstatstotals/teamstatstotals19-20.csv")
@@ -55,17 +66,16 @@ players_df <- players_df %>%
   mutate(minutes_icetime = icetime/60,
          ice_per_game = minutes_icetime/games_played)
 
-teamcolors <- teamcolors %>%
-  mutate(across(everything(),
-                .fns = ~replace(., . ==  "St. Louis Blues" , "St Louis Blues")))
 
-teams_full <- left_join(teams_full, teamcolors, by = "Team")
 
 #######################################################################
+player_varselect <- players_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("playerID", "season", "icetime", "iceTimeRank", "minutes_icetime", "games_played")))
+goalie_varselect <- goalies_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("playerID", "season")))
+team_varselect <- teams_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("season", "games_played", "iceTime")))
 
-var_choice <- names(players_df)
-var_choice_g <- names(goalies_df)
-var_choice_t <- names(teams_df)
+var_choice <- names(player_varselect)
+var_choice_g <- names(goalie_varselect)
+var_choice_t <- names(team_varselect)
 
 #######################################################################
 
@@ -92,16 +102,17 @@ ui <- dashboardPage(
               box(selectizeInput("stat",
                                  label = "Choose a Statistic",
                                  choices = var_choice,
-                                 selected = "ice_per_game"), 
-                  height = 82
-              ),
+                                 selected = "ice_per_game"), height = 82),
               box(radioButtons("situation",
                                label = "Situation",
                                choices = levels(factor(players_df$situation)),
                                selected = "all",
-                               inline = TRUE
-              )
-              ),
+                               inline = TRUE)),
+              box(radioButtons("player_season",
+                              label = "Select Season:",
+                              choices = levels(factor(players_df$season)),
+                              selected = '2020',
+                              inline = TRUE)),
               box(plotlyOutput(outputId = "plot1"), width = 12),
       )),
       tabItem("goalie10",
@@ -173,8 +184,10 @@ server <- function(input, output, session) {
   
   top_10_react <- reactive({
     players_df %>% 
-      filter(situation == input$situation) %>%
+      filter(situation == input$situation,
+             season == input$player_season) %>%
       arrange(desc(.data[[input$stat]])) %>%
+      
       slice(1:10) %>%
       mutate(name = fct_reorder(name, .data[[input$stat]]))
   })

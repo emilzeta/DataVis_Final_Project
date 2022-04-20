@@ -23,3 +23,7 @@ Working on an MLB Shiny App showing different figures that you can change depend
 April 18 Nick:
 
 He is working in creating interactive maps in different cities where you can zoom in on different properties and filter by size.
+
+April 20 Kaden:
+
+Kaden is doing similar work as I am, meaning that he is exploring some NHL data and is creating tables and visualizations.
