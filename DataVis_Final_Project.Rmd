@@ -127,16 +127,14 @@ teamcolors <- teamcolors %>%
 
 teams_full <- left_join(teams_full, teamcolors, by = "Team")
 
-ggplot(data = teams_full, aes(x = Team,
-                              y = cf_rate,
-                              color = Team,
-                              fill = Team)) +
-  geom_bar(stat = "identity") +
-  labs(x = "", y = "Corsi for per Minute")  +
-  theme(legend.position = "none") +
-  scale_fill_teams(which = 3) +
-  scale_color_teams(which = 1) +
+teams_full %>%
+  filter(season == '20/21') %>%
+  mutate(Team = fct_reorder(.f = Team, .x = cf_rate)) %>%
+  ggplot(aes(x = Team, y = cf_rate)) +
+  geom_bar(stat = "identity", color = "black", fill = "white") +
+  labs(x = "", y = "Corsi for per Minute") +
   coord_flip()
+
 
 summary(lm(ppg ~ cf_rate, data = teams_full))
 
@@ -144,8 +142,20 @@ cor(teams_full$cf_rate, teams_full$ppg)
 
 library(ggpubr)
 
-ggplot(data = teams_full, aes(x = cf_rate, y = ppg)) +
-  geom_point() + stat_cor(method = "pearson", aes(label = ..r.label..))
+teams_full %>%
+  filter(season == '20/21') %>%
+ggplot(aes(x = cf_rate, y = ppg)) +
+  geom_point() + 
+  stat_cor(method = "pearson", aes(label = ..r.label..)) +
+  geom_smooth(method = lm)
+
+teams_full %>%
+  ggplot(aes(x = cf_rate, y = ppg)) +
+  geom_point() +
+  stat_cor(method = "pearson", aes(label = ..r.label..)) +
+  geom_smooth(method = lm) +
+  labs(x = "Shot Attempt on the Empty net oer Minute",
+       y = "Team Points per Game")
 ```
 
 ```{r}
@@ -173,7 +183,7 @@ nhl_cf_rate <- teams_full %>%
               size = 1.1) 
   
   s <- attrs_selected(
-    line = list(color = ,
+    line = list(color = Team,
                 width = 3))
   
     ggplotly(fig1) %>%

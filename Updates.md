@@ -56,6 +56,11 @@ April 18 After Class Commit:
 
 I added some text and changed appearances a little bit on the empty net page.
 
+
+April 20 Before Class:
+
+I again tried to put the team colors in the graphs but it still didn't work. The work I did is in the .rmd file.
+
 =======
 MH: There were not any changes made to your files for this commit on April 13.
 >>>>>>> 0bd51e2688d4b872b9c95ab6a894b087c9364b92
