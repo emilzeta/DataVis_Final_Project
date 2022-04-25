@@ -65,6 +65,10 @@ April 20 After Class:
 
 I filtered out the non-numeric variables from the "choose a stat" data set for players, goalies and teams. I also removed some unimportant variables. I then added more data for the players data set so that I have 5 seasons instead of one and added radiobuttons to select season. On monday I expect to have done the same for goalies and teams.
 
+April 25 Before Class_
+
+I added a slider for games played for players and I started to think about how to make the page look cleaner.
+
 =======
 MH: There were not any changes made to your files for this commit on April 13.
 >>>>>>> 0bd51e2688d4b872b9c95ab6a894b087c9364b92
