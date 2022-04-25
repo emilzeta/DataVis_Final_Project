@@ -44,7 +44,7 @@ I added a 2 graphs to the new "empty net" page that I created last class. I'm cu
 
 April 13:
 
-I changed a couple of lables and also fixed some issues with graphs extending past the page.
+I changed a couple of labels and also fixed some issues with graphs extending past the page.
 
 
 April 18 Before class:
@@ -65,9 +65,13 @@ April 20 After Class:
 
 I filtered out the non-numeric variables from the "choose a stat" data set for players, goalies and teams. I also removed some unimportant variables. I then added more data for the players data set so that I have 5 seasons instead of one and added radiobuttons to select season. On monday I expect to have done the same for goalies and teams.
 
-April 25 Before Class_
+April 25 Before Class:
 
 I added a slider for games played for players and I started to think about how to make the page look cleaner.
+
+April 25 After Class:
+
+I added some more data to the teams section and made some small changes to positioning of statistics. I also filtered óut a few variables that were unnecessary. 
 
 =======
 MH: There were not any changes made to your files for this commit on April 13.

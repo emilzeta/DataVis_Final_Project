@@ -27,3 +27,7 @@ He is working in creating interactive maps in different cities where you can zoo
 April 20 Kaden:
 
 Kaden is doing similar work as I am, meaning that he is exploring some NHL data and is creating tables and visualizations.
+
+April 25 Reinhardt:
+
+He's creating a portfolio of different functions that fulls data from the ECAC Hockey website to create graphs and tables. 

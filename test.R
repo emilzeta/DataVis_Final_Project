@@ -18,9 +18,28 @@ players_df <- rbind(players_22,
                     players_19,
                     players_18)
 
-goalies_df <- read_csv("Data/goalies.csv")
-teams_df <- read_csv("Data/teams.csv")
-teamstats17_df <- read_csv("Data/teamstatstotals/teamstatstotals16-17.csv") 
+goalies_22 <- read_csv("Data/goalies21-22.csv")
+goalies_21 <- read_csv("Data/goalies20-21.csv")
+goalies_20 <- read_csv("Data/goalies19-20.csv")
+goalies_19 <- read_csv("Data/goalies18-19.csv")
+goalies_18 <- read_csv("Data/goalies17-18.csv")
+
+goalies_df <- rbind(goalies_18,
+                    goalies_19,
+                    goalies_20,
+                    goalies_21)
+
+teams_17 <- read_csv("Data/teams19-20.csv")
+teams_18 <- read_csv("Data/teams18-19.csv")
+teams_19 <- read_csv("Data/teams19-20.csv")
+teams_20 <- read_csv("Data/teams20-21.csv")
+teams_21 <- read_csv("Data/teams21-22.csv")
+
+teams_df <- rbind(teams_19,
+                  teams_20,
+                  teams_21)
+
+teamstats17_df <- read_csv("Data/teamstatstotals/teamstatstotals16-17.csv")
 teamstats18_df <- read_csv("Data/teamstatstotals/teamstatstotals17-18.csv")
 teamstats19_df <- read_csv("Data/teamstatstotals/teamstatstotals18-19.csv")
 teamstats20_df <- read_csv("Data/teamstatstotals/teamstatstotals19-20.csv")
@@ -30,6 +49,12 @@ teamstats22_df <- read_csv("Data/teamstatstotals/teamstatstotals21-22.csv")
 #######################################################################
 
   # Modifications
+
+players_22 <- players_22 %>% mutate(season = as.character(season))
+players_21 <- players_21 %>% mutate(season = as.character(season))
+players_20 <- players_20 %>% mutate(season = as.character(season))
+players_19 <- players_19 %>% mutate(season = as.character(season))
+players_18 <- players_18 %>% mutate(season = as.character(season))
 
 teamstats17_df <- teamstats17_df %>% mutate(season = '16/17')
 teamstats18_df <- teamstats18_df %>% mutate(season = '17/18') 
@@ -64,16 +89,18 @@ nhl_cf_rate <- teams_full %>%
 
 players_df <- players_df %>%
   mutate(minutes_icetime = icetime/60,
-         ice_per_game = minutes_icetime/games_played)
-
+         ice_per_game = minutes_icetime/games_played,
+         bench_time = timeOnBench/60,
+         bench_time_per_game = bench_time/games_played)
 
 
 #######################################################################
-player_varselect <- players_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("playerID", "season", "icetime", "iceTimeRank", "minutes_icetime", "games_played")))
+player_varselect <- players_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("playerID", "season", "icetime", "iceTimeRank", "minutes_icetime", "games_played", "timeOnBench"))) %>%
+  select(-ends_with("AfterShifts"))
 goalie_varselect <- goalies_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("playerID", "season")))
 team_varselect <- teams_df %>% select_if(~is.numeric(.)) %>% select(-starts_with(c("season", "games_played", "iceTime")))
 
-var_choice <- names(player_varselect)
+var_choice_p <- names(player_varselect)
 var_choice_g <- names(goalie_varselect)
 var_choice_t <- names(team_varselect)
 
@@ -101,52 +128,65 @@ ui <- dashboardPage(
               fluidRow(
               box(selectizeInput("stat",
                                  label = "Choose a Statistic",
-                                 choices = var_choice,
-                                 selected = "ice_per_game"), height = 82),
-              box(radioButtons("situation",
+                                 choices = var_choice_p,
+                                 selected = "ice_per_game"),
+                  radioButtons("situation",
                                label = "Situation",
                                choices = levels(factor(players_df$situation)),
                                selected = "all",
-                               inline = TRUE)),
+                               inline = TRUE), height = 183),
               box(radioButtons("player_season",
                               label = "Select Season:",
                               choices = levels(factor(players_df$season)),
-                              selected = '2020',
-                              inline = TRUE)),
+                              selected = '2018',
+                              inline = TRUE),
+                  sliderInput("players_gp", 
+                              label = "Games Played",
+                              min = 1,
+                              max = 82,
+                              value = 30)),
               box(plotlyOutput(outputId = "plot1"), width = 12),
-      )),
+              )),
       tabItem("goalie10",
               fluidRow(
               box(selectizeInput("goaliestat",
                                  label = "Choose a Statistic",
                                  choices = var_choice_g,
-                                 selected = "games_played"),
-                  height = 82
-              ),
-              box(radioButtons("sitgoalie",
+                                 selected = "highDangerGoals"),
+                  radioButtons("sitgoalie",
                                label = "Situation",
                                choices = levels(factor(goalies_df$situation)),
                                selected = "all",
-                               inline = TRUE
-              )
-              ),
+                               inline = TRUE), height = 183),
+              box(radioButtons("goalies_season",
+                               label = "Select Season:",
+                               choices = levels(factor(goalies_df$season)),
+                               selected = '2018',
+                               inline = TRUE),
+                  sliderInput("goalies_gp", 
+                              label = "Games Played",
+                              min = 1,
+                              max = 67,
+                              value = 30)),
               box(plotlyOutput(outputId = "plot2"), width = 12)
-      )),
+              )),
       tabItem("team10",
               fluidRow(
               box(selectizeInput("teamstat",
                                  label = "Choose a Statistic",
                                  choices = var_choice_t,
-                                 selected = "goalsFor"),
-                  height = 82
-                  ),
+                                 selected = "goalsFor"), height = 82),
               box(radioButtons("sitteam",
                                label = "Situation",
                                choices = levels(factor(teams_df$situation)),
                                selected = "all",
-                               inline = TRUE)
-                  ),
-              box(plotlyOutput(outputId = "plot3"), width = 12)
+                               inline = TRUE)),
+              box(radioButtons("teams_season",
+                               label = "Select Season:",
+                               choices = levels(factor(teams_df$season)),
+                               selected = '2019',
+                               inline = TRUE)),
+              box(plotlyOutput(outputId = "plot3"), width = 12),
               )),
       tabItem("emptynet",
               fluidRow(
@@ -185,7 +225,8 @@ server <- function(input, output, session) {
   top_10_react <- reactive({
     players_df %>% 
       filter(situation == input$situation,
-             season == input$player_season) %>%
+             season == input$player_season,
+             games_played <= input$players_gp) %>%
       arrange(desc(.data[[input$stat]])) %>%
       
       slice(1:10) %>%
@@ -209,7 +250,9 @@ server <- function(input, output, session) {
   
   top_10_goalies <- reactive({
     goalies_df %>% 
-      filter(situation == input$sitgoalie) %>%
+      filter(situation == input$sitgoalie,
+             season == input$goalies_season,
+             games_played <= input$goalies_gp) %>%
       arrange(desc(.data[[input$goaliestat]])) %>%
       slice(1:10) %>%
       mutate(name = fct_reorder(name, .data[[input$goaliestat]]))
@@ -232,7 +275,8 @@ server <- function(input, output, session) {
   
   top_10_teams <- reactive({
     teams_df %>% 
-      filter(situation == input$sitteam) %>%
+      filter(situation == input$sitteam,
+             season == input$teams_season) %>%
       arrange(desc(.data[[input$teamstat]])) %>%
       slice(1:10) %>%
       mutate(name = fct_reorder(name, .data[[input$teamstat]]))
