@@ -153,7 +153,7 @@ teams_full %>%
   geom_point() +
   stat_cor(method = "pearson", aes(label = ..r.label..)) +
   geom_smooth(method = lm) +
-  labs(x = "Shot Attempt on the Empty net oer Minute",
+  labs(x = "Shot Attempt on the Empty net per Minute",
        y = "Team Points per Game")
 ```
 

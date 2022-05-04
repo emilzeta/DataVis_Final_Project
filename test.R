@@ -109,16 +109,16 @@ var_choice_t <- names(team_varselect)
     # APP
 
 ui <- dashboardPage(
-  dashboardHeader(title = "Hockey"),
+  dashboardHeader(title = "NHL Statistics"),
   dashboardSidebar(
     sidebarMenu(
-      menuItem("Players", tabName = "players", icon = icon("ice-skate"),
+      menuItem("Players", tabName = "players", icon = icon("hockey-puck"),
                menuSubItem("Top 10", tabName = "player10")),
-      menuItem("Goalies", tabName = "goalies", icon = icon("hockey-mask"),
+      menuItem("Goalies", tabName = "goalies", icon = icon("hockey-puck"),
                menuSubItem("Top 10", tabName = "goalie10")),
-      menuItem("Teams", tabName = "teams", icon = icon("hockey-sticks"),
+      menuItem("Teams", tabName = "teams", icon = icon("hockey-puck"),
                menuSubItem("Top 10", tabName = "team10")),
-      menuItem("Empty Netters", tabName = "emptynet", icon = icon("dashboard"))
+      menuItem("Empty Netters", tabName = "emptynet", icon = icon("hockey-puck"))
     )
   ),
   dashboardBody(
@@ -126,6 +126,9 @@ ui <- dashboardPage(
       
       tabItem("player10",
               fluidRow(
+                box(title = "Top 10 Statistics for Players in the NHL",
+                    width = 12,
+                    background = "light-blue"),
               box(selectizeInput("stat",
                                  label = "Choose a Statistic",
                                  choices = var_choice_p,
@@ -149,6 +152,9 @@ ui <- dashboardPage(
               )),
       tabItem("goalie10",
               fluidRow(
+              box(title = "Top 10 Statistics for Goaltenders in the NHL",
+                  width = 12,
+                  background = "light-blue"),
               box(selectizeInput("goaliestat",
                                  label = "Choose a Statistic",
                                  choices = var_choice_g,
@@ -172,6 +178,9 @@ ui <- dashboardPage(
               )),
       tabItem("team10",
               fluidRow(
+                box(title = "Top 10 Statistics for NHL Teams",
+                    width = 12,
+                    background = "light-blue"),
               box(selectizeInput("teamstat",
                                  label = "Choose a Statistic",
                                  choices = var_choice_t,
@@ -343,7 +352,7 @@ server <- function(input, output, session) {
       geom_point() +
       geom_smooth(method = lm) +
       labs(x = "Shot Attempts on the Empty Net per Minute", y = "Team Points per Game") +
-      stat_cor(method = "pearson", aes(label = ..r.label..))
+      stat_cor(method = "pearson")
   })
 }
 
