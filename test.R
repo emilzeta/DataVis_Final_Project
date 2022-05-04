@@ -147,7 +147,7 @@ ui <- dashboardPage(
                               label = "Games Played",
                               min = 1,
                               max = 82,
-                              value = 30)),
+                              value = 82)),
               box(plotlyOutput(outputId = "plot1"), width = 12),
               )),
       tabItem("goalie10",
@@ -173,7 +173,7 @@ ui <- dashboardPage(
                               label = "Games Played",
                               min = 1,
                               max = 67,
-                              value = 30)),
+                              value = 67)),
               box(plotlyOutput(outputId = "plot2"), width = 12)
               )),
       tabItem("team10",
