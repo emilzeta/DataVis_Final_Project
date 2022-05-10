@@ -354,6 +354,6 @@ server <- function(input, output, session) {
       labs(x = "Shot Attempts on the Empty Net per Minute", y = "Team Points per Game") +
       stat_cor(method = "pearson")
   })
-}
+} 
 
 shinyApp(ui, server)
